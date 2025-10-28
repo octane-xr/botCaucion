@@ -19,9 +19,25 @@ Cuando detecta que la tasa de caución supera la de las billeteras o alcanza un 
 ## Instalación local
 1. Cloná el repositorio:
    ```bash
-   git clone https://github.com/<tu_usuario>/bot_caucion.git
+   git clone https://github.com/octane-xr/botCaucion
    cd bot_caucion
 
 2. Instala dependencias:
     ```bash
-    pip install requests beautifulsoup4 schedule
+    pip install requests beautifulsoup4 schedule bs4
+
+3. Configura tus credenciales en las variables globales del archivo `boy_caucion.py`:
+   ```bash
+   REMITENTE= "remitente@mail.com"
+   DESTINATARIO= "destinatario@mail.com"
+   PASSWORD= "tupassword"
+   ```
+   Tambien podes configurar el intervalo de minutos entre que se hace la revisión y el umbral de la caucion:
+   ```bash
+   INTERVALO_MINUTOS = 30
+   UMBRAL_CAUCION = 70
+   ```
+
+4.Ejecuta el bot:
+   ```bash
+   python3 bot_caucion.py
