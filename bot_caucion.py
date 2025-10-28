@@ -5,6 +5,13 @@ import time
 import smtplib
 from email.mime.text import MIMEText
 
+REMITENTE= "remitente@mail.com"
+DESTINATARIO= "destinatario@mail.com"
+PASSWORD= "tupassword"
+
+INTERVALO_MINUTOS = 30
+UMBRAL_CAUCION = 70
+
 def obtener_tasa_caucion():
     url = "https://iol.invertironline.com/mercado/cotizaciones/argentina/cauciones"
     headers = {
@@ -71,20 +78,16 @@ def obtener_tasa_billetera():
         return None
 
 def enviar_mail(asunto, cuerpo):
-    remitente = "tumail@mail.com"
-    destinatario = "destinatario@mail.com"
-    password = "tu password"
-
     msg = MIMEText(cuerpo)
     msg["Subject"] = asunto
-    msg["From"] = remitente
-    msg["To"] = destinatario
+    msg["From"] = REMITENTE
+    msg["To"] = DESTINATARIO
 
     try:
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
-            server.login(remitente, password)
-            server.sendmail(remitente, destinatario, msg.as_string())
+            server.login(REMITENTE, PASSWORD)
+            server.sendmail(REMITENTE, DESTINATARIO, msg.as_string())
         print(f"Enviado: {asunto}")
     except Exception as e:
         print("Error al enviar mail:", e)
@@ -100,7 +103,7 @@ def verificar_tasas():
                 "Caución superior a billeteras",
                 f"La caución ({caucion}%) supera la billetera ({billetera}%).",
             )
-        if caucion > 70:
+        if caucion > UMBRAL_CAUCION:
             enviar_mail(
                 "ALERTA: Caución alta",
                 f"La caución tomadora está en {caucion}% TNA.",
@@ -109,7 +112,7 @@ def verificar_tasas():
 def main():
     print("Bot de tasas iniciado...")
     verificar_tasas()
-    schedule.every(30).minutes.do(verificar_tasas)
+    schedule.every(INTERVALO_MINUTOS).minutes.do(verificar_tasas)
     while True:
         schedule.run_pending()
         time.sleep(60)
